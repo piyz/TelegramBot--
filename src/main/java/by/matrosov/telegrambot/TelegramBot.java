@@ -42,10 +42,42 @@ public class TelegramBot extends TelegramLongPollingBot{
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+            }else if (message.getText().equals("/bitcoin")){
+                String one = getBitcoin();
+                SendMessage s = new SendMessage().setChatId(message.getChatId()).setText(one);
+                try {
+                    execute(s);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
+    //js
+    private String getBitcoin() {
+        String result = "";
+        try {
+            String s = readStringFromUrl("http://zenrus.ru/build/js/currents.js");
+            s = s.substring(s.indexOf('{') + 1, s.indexOf("}"));
+            String[] item = s.split(",");
+
+            String usd = item[0].substring(item[0].indexOf(":")+1,item[0].indexOf(":")+5);
+            String eur = item[1].substring(item[1].indexOf(":")+1,item[1].indexOf(":")+5);
+            String oil = item[2].substring(item[2].indexOf(":")+1,item[2].indexOf(":")+5);
+            String bitcoin = item[3].substring(item[3].indexOf(":")+1,item[3].indexOf(":")+8);
+
+            result += "Доллар : " + usd + "\n";
+            result += "Евро   : " + eur + "\n";
+            result += "Нефть  : " + oil + "\n";
+            result += "Биткоин: " + bitcoin + "\n";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    //json
     private String getOil() {
         String result = "Нефть";
         try {
@@ -58,6 +90,7 @@ public class TelegramBot extends TelegramLongPollingBot{
         return result;
     }
 
+    //asp
     private String getCb(){
         String result = "ЦБ";
         try {
